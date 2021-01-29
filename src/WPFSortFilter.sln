@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30907.101
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFSortFilter", "WPFSortFilter\WPFSortFilter.csproj", "{38101427-5DE2-47A6-A151-E830E90B0E4E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualizingWrapPanel", "VirtualizingWrapPanel\VirtualizingWrapPanel.csproj", "{718FC319-412D-459D-918A-7EAED43561F1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{38101427-5DE2-47A6-A151-E830E90B0E4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38101427-5DE2-47A6-A151-E830E90B0E4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38101427-5DE2-47A6-A151-E830E90B0E4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38101427-5DE2-47A6-A151-E830E90B0E4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{718FC319-412D-459D-918A-7EAED43561F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{718FC319-412D-459D-918A-7EAED43561F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{718FC319-412D-459D-918A-7EAED43561F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{718FC319-412D-459D-918A-7EAED43561F1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {640A3A21-CE2F-44F0-A097-19E6A9B90958}
+	EndGlobalSection
+EndGlobal
