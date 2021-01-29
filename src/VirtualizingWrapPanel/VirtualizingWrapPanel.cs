@@ -8,7 +8,7 @@ namespace VirtualizingWrapPanel
 {
     /// <summary>
     /// A implementation of a wrap panel that supports virtualization and can be used in horizontal and vertical orientation.
-    /// <p class="note">In order to work properly all items must have the same size.</p>
+    /// <p>In order to work properly all items must have the same size.</p>
     /// </summary>
     public class VirtualizingWrapPanel : VirtualizingPanelBase
     {
