@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Data;
+
 namespace WPFSortFilter
 {
     /// <summary>
@@ -13,7 +14,7 @@ namespace WPFSortFilter
         public event PropertyChangedEventHandler PropertyChanged;
         public string SearchTerm { get; set; }
         public ICollectionView CollectionView { get; }
-        private ObservableCollection<Model> Items { get; } = new ObservableCollection<Model>();
+        public ObservableCollection<Model> Items { get; } = new ObservableCollection<Model>();
 
         public MainWindow()
         {
@@ -22,7 +23,7 @@ namespace WPFSortFilter
 
             AddItems();
             CollectionView = CollectionViewSource.GetDefaultView(Items);
-            ItemsControl.ItemsSource = CollectionView;
+            // ItemsControl.ItemsSource = CollectionView;
         }
 
         private void AddItems()

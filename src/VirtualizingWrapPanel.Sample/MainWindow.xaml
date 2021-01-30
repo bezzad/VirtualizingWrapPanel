@@ -28,31 +28,66 @@
                 <TextBox Text="{Binding SearchTerm, UpdateSourceTrigger=PropertyChanged}" Width="200" />
             </StackPanel>
 
-            <ListView
-                    Name="ItemsControl"
-                    Margin="0,2,0,0"
-                    ItemTemplate="{StaticResource ItemTemplate}"
-                    VirtualizingPanel.CacheLengthUnit="Item"
-                    VirtualizingPanel.CacheLength="10,10"
-                    VirtualizingPanel.ScrollUnit="Item"
-                    VirtualizingPanel.VirtualizationMode="Recycling">
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
-                    </Style>
-                </ListView.ItemContainerStyle>
-                <ListView.ItemsPanel>
+            <!-- <ListView -->
+            <!--         Name="ItemsControl" -->
+            <!--         ItemsSource="{Binding Items, Mode=OneWay}" -->
+            <!--         Margin="0,2,0,0" -->
+            <!--         ItemTemplate="{StaticResource ItemTemplate}" -->
+            <!--         VirtualizingPanel.CacheLengthUnit="Item" -->
+            <!--         VirtualizingPanel.CacheLength="10,10" -->
+            <!--         VirtualizingPanel.ScrollUnit="Item" -->
+            <!--         VirtualizingPanel.VirtualizationMode="Recycling"> -->
+            <!--     <ListView.ItemContainerStyle> -->
+            <!--         <Style TargetType="ListViewItem"> -->
+            <!--             <Setter Property="HorizontalContentAlignment" Value="Stretch"/> -->
+            <!--             <Setter Property="VerticalContentAlignment" Value="Stretch"/> -->
+            <!--         </Style> -->
+            <!--     </ListView.ItemContainerStyle> -->
+            <!--     <ListView.ItemsPanel> -->
+            <!--         <ItemsPanelTemplate> -->
+            <!--             <virtualizingWrapPanel:VirtualizingWrapPanel -->
+            <!--                 Orientation="Vertical" -->
+            <!--                 SpacingMode="Uniform" -->
+            <!--                 StretchItems="False" -->
+            <!--                 ItemSize="150,150"/> -->
+            <!--         </ItemsPanelTemplate> -->
+            <!--     </ListView.ItemsPanel> -->
+            <!-- </ListView> -->
+
+            <ItemsControl ItemsSource="{Binding Items, IsAsync=True, Mode=OneWay}" 
+                               VirtualizingPanel.CacheLengthUnit="Item"
+                               VirtualizingPanel.CacheLength="10,10"
+                               VirtualizingPanel.ScrollUnit="Item"
+                               VirtualizingPanel.VirtualizationMode="Recycling"
+                               ItemTemplate="{StaticResource ItemTemplate}"
+                               SnapsToDevicePixels="True">
+                <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <virtualizingWrapPanel:VirtualizingWrapPanel
-                            Orientation="Vertical"
-                            SpacingMode="Uniform"
-                            StretchItems="False"
-                            ItemSize="150,150"/>
+                                Margin="80,0" HorizontalAlignment="Center" 
+                                Orientation="Vertical"
+                                SpacingMode="Uniform"
+                                StretchItems="False"
+                                ItemSize="150,150"
+                                MaxWidth="1420" />
                     </ItemsPanelTemplate>
-                </ListView.ItemsPanel>
-            </ListView>
-            
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.Template>
+                    <ControlTemplate>
+                        <ScrollViewer HorizontalScrollBarVisibility="Disabled" 
+                                           VerticalScrollBarVisibility="Auto" 
+                                           IsDeferredScrollingEnabled="False" 
+                                           KeyboardNavigation.IsTabStop="True" 
+                                           CanContentScroll="True" 
+                                           Margin="5" 
+                                           Focusable="False"
+                                           PanningMode="VerticalOnly">
+                            <ItemsPresenter />
+                        </ScrollViewer>
+                    </ControlTemplate>
+                </ItemsControl.Template>
+            </ItemsControl>
+
         </DockPanel>
     </Grid>
 </Window>
