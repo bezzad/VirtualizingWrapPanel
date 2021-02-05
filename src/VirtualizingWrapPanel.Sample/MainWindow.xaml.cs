@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Data;
 using VirtualizingWrapPanel.Sample;
+using VirtualizingWrapPanel.Sample.Models;
 
 namespace WPFSortFilter
 {
@@ -30,7 +31,7 @@ namespace WPFSortFilter
         {
             for (int i = 0; i < 50000; i++)
             {
-                Items.Add(new ViewModel() { Model = Model.FakeData });
+                Items.Add(new ViewModel() { Model = BookModel.FakeData.Generate() });
             }
         }
 

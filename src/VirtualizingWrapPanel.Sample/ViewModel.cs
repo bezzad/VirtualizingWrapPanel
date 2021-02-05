@@ -1,9 +1,10 @@
-﻿using WPFSortFilter;
+﻿using VirtualizingWrapPanel.Sample.Models;
+using WPFSortFilter;
 
 namespace VirtualizingWrapPanel.Sample
 {
     public class ViewModel
     {
-        public Model Model { get; set; }
+        public BookModel Model { get; set; }
     }
 }
