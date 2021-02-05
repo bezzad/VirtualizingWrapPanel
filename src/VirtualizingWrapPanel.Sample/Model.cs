@@ -19,6 +19,7 @@ namespace WPFSortFilter
         public string SSN { get; set; }
         public string Suffix { get; set; }
         public string Phone { get; set; }
+        public string CoverUri { get; set; }
         public DateTime CurrentDateTime => DateTime.Now;
 
         // <summary>Gets the fake data.</summary>
@@ -30,13 +31,14 @@ namespace WPFSortFilter
                 .RuleFor(p => p.FirstName, f => f.Name.FirstName())
                 .RuleFor(p => p.MiddleName, f => f.Name.FirstName())
                 .RuleFor(p => p.LastName, f => f.Name.LastName())
-                .RuleFor(p => p.Title, f => f.Name.Prefix(f.Person.Gender))
+                .RuleFor(p => p.Title, f => f.Random.Words(3))
                 .RuleFor(p => p.Suffix, f => f.Name.Suffix())
                 .RuleFor(p => p.Email, (f, p) => f.Internet.Email(p.FirstName, p.LastName))
                 .RuleFor(p => p.DOB, f => f.Date.Past(18))
                 .RuleFor(p => p.Gender, f => f.PickRandom<Gender>())
                 .RuleFor(p => p.SSN, f => f.Random.Replace("###-##-####"))
-                .RuleFor(p => p.Phone, f => f.Phone.PhoneNumber("(###)-###-####"));
+                .RuleFor(p => p.Phone, f => f.Phone.PhoneNumber("(###)-###-####"))
+                .RuleFor(p => p.CoverUri, f => f.Image.LoremFlickrUrl(150, 200));
     }
 
     public enum Gender

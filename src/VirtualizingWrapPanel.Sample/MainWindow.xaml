@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFSortFilter"
         xmlns:virtualizingWrapPanel="clr-namespace:VirtualizingWrapPanel;assembly=VirtualizingWrapPanel"
+        xmlns:sample="clr-namespace:VirtualizingWrapPanel.Sample"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
 
@@ -59,7 +60,6 @@
                                VirtualizingPanel.CacheLength="10,10"
                                VirtualizingPanel.ScrollUnit="Item"
                                VirtualizingPanel.VirtualizationMode="Recycling"
-                               ItemTemplate="{StaticResource ItemTemplate}"
                                SnapsToDevicePixels="True">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -68,10 +68,15 @@
                                 Orientation="Vertical"
                                 SpacingMode="Uniform"
                                 StretchItems="False"
-                                ItemSize="150,150"
+                                ItemSize="160,270"
                                 MaxWidth="1420" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <sample:ItemControl />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
                 <ItemsControl.Template>
                     <ControlTemplate>
                         <ScrollViewer HorizontalScrollBarVisibility="Disabled" 

@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="VirtualizingWrapPanel.Sample.ItemControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:sample="clr-namespace:VirtualizingWrapPanel.Sample"
+             mc:Ignorable="d" 
+             d:DesignHeight="200" d:DesignWidth="135">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="200"/>
+            <RowDefinition Height="25"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="68" />
+            <ColumnDefinition Width="67" />
+        </Grid.ColumnDefinitions>
+        <Decorator Grid.Row="0" Grid.ColumnSpan="2" Height="200" Cursor="Hand" IsHitTestVisible="True">
+            <Decorator.Effect>
+                <DropShadowEffect ShadowDepth="1" BlurRadius="5" RenderingBias="Performance"/>
+            </Decorator.Effect>
+            <Grid x:Name="BookFrame">
+                <sample:CachedImage ImageUrl="{Binding Model.CoverUri, Mode=OneTime, Converter={StaticResource AddQueryParamConverter}, ConverterParameter='w=150'}" />
+                <Image Source="pack://application:,,,/VirtualizingWrapPanel.Sample;component/Resources/Images/eBookOverlay.png" Stretch="UniformToFill" 
+                       ToolTip="{Binding Model.Title, Mode=OneTime}"/>
+                <!-- Note: Added Download Progress Bar Dynamically at Runtime -->
+            </Grid>
+        </Decorator>
+       
+    </Grid>
+</UserControl>

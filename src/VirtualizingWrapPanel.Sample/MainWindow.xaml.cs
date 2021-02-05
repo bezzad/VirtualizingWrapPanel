@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Data;
+using VirtualizingWrapPanel.Sample;
 
 namespace WPFSortFilter
 {
@@ -11,10 +12,10 @@ namespace WPFSortFilter
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        private ICollectionView CollectionView { get; }
         public event PropertyChangedEventHandler PropertyChanged;
         public string SearchTerm { get; set; }
-        public ICollectionView CollectionView { get; }
-        public ObservableCollection<Model> Items { get; } = new ObservableCollection<Model>();
+        public ObservableCollection<ViewModel> Items { get; } = new ObservableCollection<ViewModel>();
 
         public MainWindow()
         {
@@ -23,23 +24,23 @@ namespace WPFSortFilter
 
             AddItems();
             CollectionView = CollectionViewSource.GetDefaultView(Items);
-            // ItemsControl.ItemsSource = CollectionView;
         }
 
         private void AddItems()
         {
-            for (int i = 0; i < 5000; i++)
+            for (int i = 0; i < 50000; i++)
             {
-                Items.Add(Model.FakeData);
+                Items.Add(new ViewModel() { Model = Model.FakeData });
             }
         }
 
         private void OnSearchTermChanged()
         {
-            CollectionView.Filter = new Predicate<object>((item) => {
-                if (string.IsNullOrWhiteSpace(SearchTerm) == false && item is Model contact)
+            CollectionView.Filter = new Predicate<object>((item) =>
+            {
+                if (string.IsNullOrWhiteSpace(SearchTerm) == false && item is ViewModel vm)
                 {
-                    return contact.FirstName.StartsWith(SearchTerm, StringComparison.OrdinalIgnoreCase);
+                    return vm.Model.Title.StartsWith(SearchTerm, StringComparison.OrdinalIgnoreCase);
                 }
 
                 return true;

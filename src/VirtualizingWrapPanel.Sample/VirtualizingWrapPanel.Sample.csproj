@@ -7,12 +7,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Images\eBookOverlay.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Bogus" Version="32.0.2" />
     <PackageReference Include="PropertyChanged.Fody" Version="3.3.1" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.0" />
+    <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\VirtualizingWrapPanel\VirtualizingWrapPanel.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Images\eBookOverlay.png" />
   </ItemGroup>
 
 </Project>

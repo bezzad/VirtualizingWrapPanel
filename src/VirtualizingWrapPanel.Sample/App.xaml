@@ -2,8 +2,9 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:WPFSortFilter"
+             xmlns:sample="clr-namespace:VirtualizingWrapPanel.Sample"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <sample:AddQueryParamConverter x:Key="AddQueryParamConverter"/>
     </Application.Resources>
 </Application>
