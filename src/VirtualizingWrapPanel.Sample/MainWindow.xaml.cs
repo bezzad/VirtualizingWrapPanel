@@ -41,7 +41,8 @@ namespace WPFSortFilter
             {
                 if (string.IsNullOrWhiteSpace(SearchTerm) == false && item is ViewModel vm)
                 {
-                    return vm.Model.Title.StartsWith(SearchTerm, StringComparison.OrdinalIgnoreCase);
+                    return vm.Model.Title.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) ||
+                           vm.Model.Author.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase);
                 }
 
                 return true;
