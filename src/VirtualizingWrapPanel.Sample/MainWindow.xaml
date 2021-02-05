@@ -8,20 +8,6 @@
         xmlns:models="clr-namespace:VirtualizingWrapPanel.Sample.Models"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-
-    <Window.Resources>
-        <DataTemplate x:Key="ItemTemplate" DataType="models:BookModel">
-            <ToggleButton Background="AntiqueWhite" Width="120" Height="120">
-                <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                    <TextBlock FontSize="20" TextAlignment="Center" Text="{Binding Number, Mode=OneTime}" Padding="8" />
-                    <TextBlock FontSize="18" TextAlignment="Center" Text="{Binding FirstName, Mode=OneTime}" Padding="8" />
-                    <TextBlock FontSize="18" TextAlignment="Center" Text="{Binding LastName, Mode=OneTime}" Padding="8" />
-                    <TextBlock TextAlignment="Center" Text="{Binding CurrentDateTime, Mode=OneWay, StringFormat='{}{0:hh:mm:ss}'}" Padding="8" />
-                </StackPanel>
-            </ToggleButton>
-        </DataTemplate>
-    </Window.Resources>
-
     <Grid>
         <DockPanel>
             <StackPanel DockPanel.Dock="Top" Margin="12" Orientation="Horizontal" >
@@ -56,10 +42,10 @@
             <!-- </ListView> -->
 
             <ItemsControl ItemsSource="{Binding Items, IsAsync=True, Mode=OneWay}" 
-                               VirtualizingPanel.CacheLengthUnit="Item"
-                               VirtualizingPanel.CacheLength="10,10"
-                               VirtualizingPanel.ScrollUnit="Item"
-                               VirtualizingPanel.VirtualizationMode="Recycling"
+                               VirtualizingPanel.CacheLengthUnit="Pixel"
+                               VirtualizingPanel.CacheLength="1,1"
+                               VirtualizingPanel.ScrollUnit="Pixel"
+                               VirtualizingPanel.VirtualizationMode="Standard"
                                SnapsToDevicePixels="True">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -80,13 +66,13 @@
                 <ItemsControl.Template>
                     <ControlTemplate>
                         <ScrollViewer HorizontalScrollBarVisibility="Disabled" 
-                                           VerticalScrollBarVisibility="Auto" 
-                                           IsDeferredScrollingEnabled="False" 
-                                           KeyboardNavigation.IsTabStop="True" 
-                                           CanContentScroll="True" 
-                                           Margin="5" 
-                                           Focusable="False"
-                                           PanningMode="VerticalOnly">
+                                       VerticalScrollBarVisibility="Visible" 
+                                       IsDeferredScrollingEnabled="False" 
+                                       KeyboardNavigation.IsTabStop="True" 
+                                       CanContentScroll="True" 
+                                       Margin="5" 
+                                       Focusable="False"
+                                       PanningMode="VerticalOnly">
                             <ItemsPresenter />
                         </ScrollViewer>
                     </ControlTemplate>

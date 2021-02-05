@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:sample="clr-namespace:VirtualizingWrapPanel.Sample"
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="135">
     <Grid>
@@ -27,36 +26,5 @@
                 <!-- Note: Added Download Progress Bar Dynamically at Runtime -->
             </Grid>
         </Decorator>
-
-        <materialDesign:PopupBox Grid.Row="1" Grid.Column="0"  
-                                 x:Name="BookMenuPopupButton" PlacementMode="BottomAndAlignRightEdges" StaysOpen="False"  
-                                 PopupMode="Click" Padding="0" IsPopupOpen="{Binding BookMoreOpened, Mode=OneWayToSource}" 
-                                 ToolTip="{Binding Model.Title, Mode=OneTime}">
-            <materialDesign:PopupBox.ToggleContent>
-                <materialDesign:PackIcon Kind="DotsHorizontal" Width="24" Height="24"
-                                         Foreground="{StaticResource Brushes.Gray0}"/>
-            </materialDesign:PopupBox.ToggleContent>
-            <!-- Note: Popup ListBox Content loaded dynamically from behind codes -->
-        </materialDesign:PopupBox>
-
-        <DockPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
-            <materialDesign:PackIcon  Kind="Checks" Width="18" Height="18" Margin="2 2 2 0" 
-                                      ToolTip="{Binding Model.Title, Mode=OneTime}"
-                                      Foreground="{StaticResource Brushes.Gray0}" />
-
-            <materialDesign:PackIcon Kind="CloudQueue" Width="20" Height="20" 
-                                     ToolTip="{Binding Model.Title, Mode=OneTime}"
-                                     Foreground="{StaticResource Brushes.Gray0}" />
-
-            <TextBlock Text="{Binding Model.ReadPagesRatio, StringFormat=%{0:N0}, Mode=OneWay}" FontSize="14" 
-                       Foreground="{StaticResource Brushes.Gray0}" />
-
-            <materialDesign:PackIcon  Kind="BookOpenVariant" 
-                                      Width="16" Height="16" Margin="5 0 0 0"
-                                      VerticalAlignment="Center"
-                                      ToolTip="{Binding Model.Title, Mode=OneTime}" 
-                                      Foreground="{StaticResource Brushes.Gray0}"/>
-        </DockPanel>
-
     </Grid>
 </UserControl>
