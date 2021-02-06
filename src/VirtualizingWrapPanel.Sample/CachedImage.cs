@@ -6,6 +6,7 @@ using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.IO;
 using System.Net.Cache;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Brush = System.Drawing.Brush;
@@ -53,65 +54,73 @@ namespace VirtualizingWrapPanel.Sample
             set => SetValue(CreateOptionsProperty, value);
         }
 
-
         private static async void ImageUrlPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
-            var cachedImage = (CachedImage)obj;
-            Debug.WriteLine($"CacheImage.ImageUrlPropertyChanged --> CachedImage: {e.NewValue}");
-
-            if (e.NewValue is string url && !string.IsNullOrWhiteSpace(url))
+            try
             {
-                var bitmapImage = new BitmapImage();
+                var cachedImage = (CachedImage)obj;
+                Debug.WriteLine($"CacheImage.ImageUrlPropertyChanged --> CachedImage: {e.NewValue}");
 
-                switch (FileCache.AppCacheMode)
+                if (e.NewValue is string url && string.IsNullOrWhiteSpace(url) == false)
                 {
-                    case FileCache.CacheMode.WinINet:
-                        bitmapImage.BeginInit();
-                        bitmapImage.CreateOptions = cachedImage.CreateOptions;
-                        bitmapImage.UriSource = new Uri(url, UriKind.RelativeOrAbsolute);
-                        // Enable IE-like cache policy.
-                        bitmapImage.UriCachePolicy = new RequestCachePolicy(RequestCacheLevel.Default);
-                        bitmapImage.EndInit();
-                        cachedImage.Source = bitmapImage;
-                        break;
 
-                    case FileCache.CacheMode.Dedicated:
-                        try
-                        {
-                            var memoryStream = await FileCache.HitAsync(url);
-                            if (memoryStream == null && string.IsNullOrWhiteSpace(cachedImage?.AvatarName) != true)
-                            {
-                                cachedImage.ImageWidth = cachedImage.ImageWidth > 1 ? cachedImage.ImageWidth : 256;
-                                cachedImage.ImageHeight = cachedImage.ImageHeight > 1 ? cachedImage.ImageHeight : cachedImage.ImageWidth;
+                    switch (FileCache.AppCacheMode)
+                    {
+                        case FileCache.CacheMode.WinINet:
+                            SetWinINetCachedImage(cachedImage, url);
+                            break;
 
-                                memoryStream = GenerateAvatarImage(cachedImage.AvatarName,
-                                    new Size(cachedImage.ImageWidth, cachedImage.ImageHeight),
-                                    (float)(cachedImage.ImageWidth / 2.66), Color.Teal, Color.White);
-                            }
+                        case FileCache.CacheMode.Dedicated:
+                            await SetDedicatedCachedImage(cachedImage, url);
+                            break;
 
-                            bitmapImage.BeginInit();
-                            bitmapImage.CreateOptions = cachedImage.CreateOptions;
-                            bitmapImage.StreamSource = memoryStream;
-                            bitmapImage.EndInit();
-                            cachedImage.Source = bitmapImage;
-                        }
-                        catch
-                        {
-                            // ignored, in case the downloaded file is a broken or not an image.
-                        }
-
-                        break;
-
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
+                else
+                {
+                    cachedImage.Source = null;
                 }
             }
-            else
+            catch
             {
-                cachedImage.Source = null;
+                // ignored, in case the downloaded file is a broken or not an image.
+                //Debugger.Break();
             }
         }
 
+        private static void SetWinINetCachedImage(CachedImage cachedImage, string url)
+        {
+            var bitmapImage = new BitmapImage();
+            bitmapImage.BeginInit();
+            bitmapImage.CreateOptions = cachedImage.CreateOptions;
+            bitmapImage.UriSource = new Uri(url, UriKind.RelativeOrAbsolute);
+            // Enable IE-like cache policy.
+            bitmapImage.UriCachePolicy = new RequestCachePolicy(RequestCacheLevel.Default);
+            bitmapImage.EndInit();
+            cachedImage.Source = bitmapImage;
+        }
+        private static async Task SetDedicatedCachedImage(CachedImage cachedImage, string url)
+        {
+            var bitmapImage = new BitmapImage();
+            var memoryStream = await FileCache.HitAsync(url);
+            if (memoryStream == null && string.IsNullOrWhiteSpace(cachedImage.AvatarName) == false)
+            {
+                cachedImage.ImageWidth = cachedImage.ImageWidth > 1 ? cachedImage.ImageWidth : 256;
+                cachedImage.ImageHeight = cachedImage.ImageHeight > 1 ? cachedImage.ImageHeight : cachedImage.ImageWidth;
+
+                memoryStream = GenerateAvatarImage(cachedImage.AvatarName,
+                    new Size(cachedImage.ImageWidth, cachedImage.ImageHeight),
+                    (float)(cachedImage.ImageWidth / 2.66), Color.Teal, Color.White);
+            }
+
+            bitmapImage.BeginInit();
+            bitmapImage.CreateOptions = cachedImage.CreateOptions;
+            bitmapImage.StreamSource = memoryStream;
+            bitmapImage.EndInit();
+            cachedImage.Source = bitmapImage;
+        }
         private static MemoryStream GenerateAvatarImage(string name, Size imgSize, float emSize, Color background, Color foreground)
         {
             var avatarString = name[0].ToString().ToUpper();
@@ -141,7 +150,5 @@ namespace VirtualizingWrapPanel.Sample
 
             return ms;
         }
-
-
     }
 }

@@ -19,7 +19,7 @@
             <Decorator.Effect>
                 <DropShadowEffect ShadowDepth="1" BlurRadius="5" RenderingBias="Performance"/>
             </Decorator.Effect>
-            <Grid x:Name="BookFrame">
+            <Grid>
                 <sample:CachedImage ImageUrl="{Binding Model.CoverUri, Mode=OneTime, Converter={StaticResource AddQueryParamConverter}, ConverterParameter='w=150'}" />
                 <Image Source="pack://application:,,,/VirtualizingWrapPanel.Sample;component/Resources/Images/eBookOverlay.png" Stretch="UniformToFill" 
                        ToolTip="{Binding Model.Title, Mode=OneTime}"/>

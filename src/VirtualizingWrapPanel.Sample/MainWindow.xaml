@@ -43,7 +43,7 @@
 
             <ItemsControl ItemsSource="{Binding Items, IsAsync=True, Mode=OneWay}" 
                                VirtualizingPanel.CacheLengthUnit="Pixel"
-                               VirtualizingPanel.CacheLength="1,1"
+                               VirtualizingPanel.CacheLength="0,0"
                                VirtualizingPanel.ScrollUnit="Pixel"
                                VirtualizingPanel.VirtualizationMode="Standard"
                                SnapsToDevicePixels="True">

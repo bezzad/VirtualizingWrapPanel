@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Net;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,17 +18,15 @@ namespace VirtualizingWrapPanel.Sample
         static FileCache()
         {
             // default cache directory - can be changed if needed from App.xaml
-            AppCacheDirectory = Path.Combine(Path.GetTempPath(), nameof(VirtualizingWrapPanel));
+            AppCacheDirectory = "D:\\TestVirtualizing\\";
             AppCacheMode = CacheMode.Dedicated;
         }
 
-
         // Record whether a file is being written.
-        private static readonly Dictionary<string, bool> IsWritingFile = new Dictionary<string, bool>();
+        private static readonly ConcurrentDictionary<string, SemaphoreSlim> WritingSemaphore = new ConcurrentDictionary<string, SemaphoreSlim>();
         private static readonly string DownloadingFileExtension = ".download";
-        private static readonly SemaphoreSlim SyncObject = new SemaphoreSlim(5);
-        public static int DownloadTimeoutMillisecond { get; set; } = 20000; // 20sec
 
+        public static int TimeoutMillisecond { get; set; } = 20000; // 20sec
 
         /// <summary>
         ///     Gets or sets the path to the folder that stores the cache file. Only works when AppCacheMode is
@@ -48,71 +43,81 @@ namespace VirtualizingWrapPanel.Sample
 
         public static async Task<MemoryStream> HitAsync(string url)
         {
-            if (!Directory.Exists(AppCacheDirectory))
-            {
-                Directory.CreateDirectory(AppCacheDirectory);
-            }
-            var uri = new Uri(url);
-            var fileNameBuilder = new StringBuilder();
-            using (var sha1 = new SHA1Managed())
-            {
-                var canonicalUrl = uri.ToString();
-                var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(canonicalUrl));
-                fileNameBuilder.Append(BitConverter.ToString(hash).Replace("-", "").ToLower());
-                if (Path.HasExtension(canonicalUrl))
-                    fileNameBuilder.Append(Path.GetExtension(canonicalUrl.RemoveQueryParams()));
-            }
-
-            var fileName = fileNameBuilder.ToString();
-            var localFile = $"{AppCacheDirectory}\\{fileName}";
-            var memoryStream = new MemoryStream();
-
-            FileStream fileStream = null;
-            if (!IsWritingFile.ContainsKey(fileName) && File.Exists(localFile))
-            {
-                await using (fileStream = new FileStream(localFile, FileMode.Open, FileAccess.Read))
-                {
-                    await fileStream.CopyToAsync(memoryStream);
-                }
-                memoryStream.Seek(0, SeekOrigin.Begin);
-                return memoryStream;
-            }
-
-            var request = WebRequest.Create(uri);
-            request.Timeout = DownloadTimeoutMillisecond;
+            SemaphoreSlim syncSemaphoreSlim = null;
             try
             {
-                await SyncObject.WaitAsync();
+                if (!Directory.Exists(AppCacheDirectory))
+                {
+                    Directory.CreateDirectory(AppCacheDirectory);
+                }
+
+                var fileName = GetUniqueFileName(url);
+                var localFile = GetFilePath(fileName);
+
+                syncSemaphoreSlim = WritingSemaphore.GetOrAdd(fileName, new SemaphoreSlim(1));
+                await syncSemaphoreSlim.WaitAsync(TimeoutMillisecond);
+                if (File.Exists(localFile))
+                {
+                    return await GetFileFromDisk(localFile);
+                }
+
+                return await DownloadFile(url, fileName);
+            }
+            finally
+            {
+                syncSemaphoreSlim?.Release(1);
+            }
+        }
+
+        private static string GetUniqueFileName(string url)
+        {
+            var fileName = url.Hash();
+            fileName += Path.HasExtension(url) ? Path.GetExtension(url.RemoveQueryParams()) : "";
+            return fileName;
+        }
+        private static string GetFilePath(string fileName)
+        {
+            return $"{AppCacheDirectory}\\{fileName}";
+        }
+        private static async Task<MemoryStream> GetFileFromDisk(string filename)
+        {
+            var memoryStream = new MemoryStream();
+            await using var stream = new FileStream(filename, FileMode.Open, FileAccess.Read);
+            {
+                await stream.CopyToAsync(memoryStream);
+            }
+            memoryStream.Seek(0, SeekOrigin.Begin);
+            return memoryStream;
+        }
+        private static async Task<MemoryStream> DownloadFile(string url, string fileName)
+        {
+            try
+            {
+                var localFile = GetFilePath(fileName);
+                localFile = localFile + DownloadingFileExtension;
+                var memoryStream = new MemoryStream();
+                var request = WebRequest.Create(new Uri(url));
+                request.Timeout = TimeoutMillisecond;
                 var response = await request.GetResponseAsync();
                 var responseStream = response.GetResponseStream();
                 if (responseStream == null)
                     return null;
-                if (!IsWritingFile.ContainsKey(fileName))
-                {
-                    IsWritingFile[fileName] = true;
-                    localFile = localFile + DownloadingFileExtension;
-                    fileStream = new FileStream(localFile, FileMode.Create, FileAccess.Write);
-                }
 
                 await using (responseStream)
                 {
+                    var fileStream = new FileStream(localFile, FileMode.Create, FileAccess.Write, FileShare.Delete | FileShare.Read);
                     var byteBuffer = new byte[100];
                     int bytesRead;
                     do
                     {
                         bytesRead = await responseStream.ReadAsync(byteBuffer, 0, 100);
-                        if (fileStream != null)
-                            await fileStream.WriteAsync(byteBuffer, 0, bytesRead);
+                        await fileStream.WriteAsync(byteBuffer, 0, bytesRead);
                         await memoryStream.WriteAsync(byteBuffer, 0, bytesRead);
                     } while (bytesRead > 0);
 
-                    if (fileStream != null)
-                    {
-                        await fileStream.FlushAsync();
-                        await fileStream.DisposeAsync();
-                        IsWritingFile.Remove(fileName);
-                        File.Move(localFile, localFile.Replace(DownloadingFileExtension, ""));
-                    }
+                    await fileStream.FlushAsync();
+                    await fileStream.DisposeAsync();
+                    File.Move(localFile, localFile.Replace(DownloadingFileExtension, ""));
                 }
 
                 memoryStream.Seek(0, SeekOrigin.Begin);
@@ -123,19 +128,6 @@ namespace VirtualizingWrapPanel.Sample
                 // ignore exception
                 return null;
             }
-            finally
-            {
-                SyncObject.Release(1);
-            }
-        }
-
-        [DebuggerHidden]
-        public static string RemoveQueryParams(this string url)
-        {
-            var qIndex = url.IndexOf('?');
-            if (qIndex < 0)
-                return url;
-            return url.Remove(qIndex);
         }
     }
 }
