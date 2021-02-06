@@ -46,6 +46,7 @@
                                VirtualizingPanel.CacheLength="0,0"
                                VirtualizingPanel.ScrollUnit="Pixel"
                                VirtualizingPanel.VirtualizationMode="Standard"
+                               VirtualizingPanel.IsVirtualizing="True"
                                SnapsToDevicePixels="True">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
